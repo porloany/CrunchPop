@@ -1,0 +1,44 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+build/
+
+# production
+dist/
+
+# env
+.env
+.env*.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# testing / coverage
+coverage/
+
+# typeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# system files
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
+
+# local agent / skills artifacts
+.agents/
+.codex/
+skills-lock.json
+
+# deployment
+.vercel/
+netlify/

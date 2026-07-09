@@ -1,0 +1,102 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  background: #f7f3ee;
+  --font-cormorant: "Cormorant Garamond";
+  --font-poppins: "Poppins";
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 50% -12%, rgba(183, 137, 70, 0.12), transparent 32rem),
+    linear-gradient(180deg, #fffdf8 0%, #f7f3ee 42%, #fffdf8 100%);
+  color: #4a342c;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+button:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+::selection {
+  background: rgba(183, 137, 70, 0.32);
+}
+
+.grain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  opacity: 0.08;
+  mix-blend-mode: multiply;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(74, 52, 44, 0.025),
+    rgba(74, 52, 44, 0.025) 1px,
+    transparent 1px,
+    transparent 5px
+  );
+}
+
+@layer components {
+  .luxury-eyebrow {
+    @apply inline-flex rounded-full border border-caramel/20 bg-warm/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-caramel;
+  }
+
+  .luxury-shell {
+    @apply rounded-[2rem] border border-chocolate/10 bg-warm/55 p-1.5 shadow-card;
+  }
+
+  .luxury-core {
+    @apply rounded-[calc(2rem-0.375rem)] border border-white/70 bg-cream shadow-[inset_0_1px_1px_rgba(255,255,255,0.72)];
+  }
+
+  .luxury-motion {
+    @apply transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)];
+  }
+
+  .luxury-cta {
+    @apply inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-chocolate py-2 pl-7 pr-2 text-sm font-semibold text-warm shadow-soft transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-coffee active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-caramel focus:ring-offset-2 focus:ring-offset-cream;
+  }
+
+  .luxury-cta-mark {
+    @apply grid h-8 w-8 place-items-center rounded-full bg-warm/10 text-base transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-px group-hover:bg-warm/15;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
