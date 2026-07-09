@@ -64,8 +64,6 @@ const initialCheckout: CheckoutData = {
   notes: ""
 };
 
-const separator = "--------------";
-
 export function CrunchPopPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -286,33 +284,32 @@ export function CrunchPopPage() {
   function buildWhatsappMessage() {
     const orderLines = cart
       .map((item) => {
-        const itemTitle = `${item.quantity}x CrunchPop ${item.sizeName}`;
-        const classicLine =
-          item.kind === "classic" ? `Clássico: ${item.name}\n` : "";
+        const itemTitle = `• ${item.quantity} CrunchPop ${item.sizeName}`;
+
+        if (item.kind === "classic") {
+          return `${itemTitle}\n${item.name}`;
+        }
+
         const flavorLines = item.flavors
           .map((flavor) => `- ${flavor}`)
           .join("\n");
 
-        return `${itemTitle}\n${classicLine}Sabores:\n${flavorLines}\n${formatCurrency(item.price)}`;
+        return `${itemTitle}\nSabores:\n${flavorLines}`;
       })
       .join("\n\n");
 
+    const receivingText =
+      checkout.receiveMode === "Retirada no local"
+        ? "Vou retirar no local."
+        : `Vou enviar um Moto Uber / Uber Flash para buscar o pedido.\n\nEndereço:\n${formatDeliveryAddress()}`;
+
     const sections = [
-      "Novo pedido - CrunchPop",
-      separator,
-      `CLIENTE\nNome:\n${checkout.name}\n\nWhatsApp:\n${checkout.whatsapp}`,
-      separator,
-      `RECEBIMENTO\nModo:\n${checkout.receiveMode}`,
-      checkout.receiveMode === "Moto Uber / Uber Flash" && formatDeliveryAddress()
-        ? `Endereço:\n${formatDeliveryAddress()}`
-        : "",
-      separator,
-      `PEDIDO\n${orderLines}`,
-      separator,
-      `TOTAL\n${formatCurrency(total)}`,
-      checkout.notes.trim()
-        ? `${separator}\nOBSERVAÇÕES\n${checkout.notes.trim()}`
-        : ""
+      "Olá! 😊",
+      `Gostaria de pedir:\n\n${orderLines}`,
+      `Total: ${formatCurrency(total)}`,
+      receivingText,
+      `Meu nome é ${checkout.name}.\nWhatsApp: ${checkout.whatsapp}`,
+      checkout.notes.trim() ? `Observações:\n${checkout.notes.trim()}` : ""
     ].filter(Boolean);
 
     return sections.join("\n\n");
