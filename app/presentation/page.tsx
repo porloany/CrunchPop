@@ -238,8 +238,8 @@ function ProductImageFrame() {
       <div className="luxury-shell relative">
         <div className="luxury-core overflow-hidden">
           <Image
-            src="/crunchpop-hero.png"
-            alt="Pote elegante com sobremesa CrunchPop coberta de chocolate e caramelo"
+            src="/crunchpop-baldinho.png"
+            alt="Baldinho transparente de CrunchPop coberto com chocolate e cremes"
             width={1024}
             height={1024}
             priority
@@ -399,7 +399,7 @@ function CardsPreview() {
                 )}
                 <div className="mb-5 overflow-hidden rounded-xl bg-warm">
                   <Image
-                    src="/crunchpop-hero.png"
+                    src="/crunchpop-baldinho.png"
                     alt={`CrunchPop clássico ${product.name}`}
                     width={640}
                     height={420}
@@ -407,7 +407,7 @@ function CardsPreview() {
                     style={{ objectPosition: product.imagePosition }}
                   />
                 </div>
-                <h3 className="font-display text-3xl font-semibold text-chocolate">
+                <h3 className="font-display text-3xl font-semibold italic text-chocolate">
                   {product.name}
                 </h3>
                 <p className="mt-2 flex-1 text-sm leading-6 text-coffee">
@@ -470,7 +470,7 @@ function CheckoutPreview() {
           </div>
           <div className="mt-5">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-coffee">
-              Como deseja receber sua CrunchPop?
+              Como deseja receber seu baldinho?
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
               <span className="rounded-full border border-chocolate bg-chocolate px-4 py-3 text-center text-sm font-semibold text-warm">
@@ -561,7 +561,7 @@ function ModalPreview() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h3 className="font-display text-3xl font-semibold text-chocolate">
-                  CrunchPop • {item.sizeName}
+                  Baldinho CrunchPop • {item.sizeName}
                 </h3>
               </div>
               <span className="rounded-full border border-caramel/25 px-3 py-1 text-xs font-semibold text-chocolate">
@@ -570,7 +570,9 @@ function ModalPreview() {
             </div>
             <div className="mt-4 text-sm leading-6 text-coffee">
               {item.kind === "classic" ? (
-                <p className="font-semibold text-chocolate">{item.name}</p>
+                <p className="font-display text-2xl font-semibold italic text-chocolate">
+                  {item.name}
+                </p>
               ) : (
                 <>
                   <p className="font-semibold text-chocolate">Sabores:</p>
@@ -677,7 +679,7 @@ function CartPreview() {
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h4 className="font-display text-2xl font-semibold text-chocolate">
+                  <h4 className="font-display text-2xl font-semibold italic text-chocolate">
                     {item.name}
                   </h4>
                   <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-caramel">
