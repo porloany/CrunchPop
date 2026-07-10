@@ -23,10 +23,7 @@ import {
 } from "@/lib/products";
 import {
   STORE_INSTAGRAM,
-  STORE_LOCATION,
-  STORE_NEIGHBORHOOD,
   STORE_WHATSAPP,
-  STORE_WHATSAPP_DISPLAY,
 } from "@/lib/store";
 
 type CartItem = {
@@ -41,27 +38,13 @@ type CartItem = {
 
 type PurchasePath = "classic" | "custom";
 
-type ReceiveMode = "Retirada no local" | "Moto Uber / Uber Flash";
-
 type CheckoutData = {
   name: string;
-  whatsapp: string;
-  receiveMode: ReceiveMode;
-  address: string;
-  number: string;
-  complement: string;
-  reference: string;
   notes: string;
 };
 
 const initialCheckout: CheckoutData = {
   name: "",
-  whatsapp: "",
-  receiveMode: "Retirada no local",
-  address: "",
-  number: "",
-  complement: "",
-  reference: "",
   notes: "",
 };
 
@@ -229,48 +212,37 @@ export function CrunchPopPage() {
       setStatus("Monte sua CrunchPop antes de enviar.");
       return;
     }
+    if (!checkout.name.trim()) {
+      setStatus("Informe seu nome para continuar.");
+      setToast("Informe seu nome para continuar.");
+      return;
+    }
     setIsConfirmationOpen(true);
-  }
-
-  function formatDeliveryAddress() {
-    const addressParts = [checkout.address, checkout.number]
-      .filter((part) => part.trim())
-      .join(", ");
-    const details = [addressParts];
-    if (checkout.complement.trim())
-      details.push(`Complemento: ${checkout.complement.trim()}`);
-    if (checkout.reference.trim())
-      details.push(`Referência: ${checkout.reference.trim()}`);
-    return details.filter(Boolean).join("\n");
   }
 
   function buildWhatsappMessage() {
     const orderLines = cart
       .map((item) => {
-        const qty = item.quantity > 1 ? `${item.quantity}x ` : "";
-        if (item.kind === "classic") {
-          return `🍫 ${qty}Baldinho ${item.sizeName} — ${item.name}`;
-        }
-        const flavors = item.flavors.join(", ");
-        return `🍫 ${qty}Baldinho ${item.sizeName} — ${flavors}`;
+        const itemTitle = `• ${item.quantity} CrunchPop ${item.sizeName}`;
+        const flavors =
+          item.flavors.length === 1
+            ? item.flavors[0]
+            : ["Sabores:", ...item.flavors.map((flavor) => `- ${flavor}`)].join(
+                "\n",
+              );
+        return `${itemTitle}\n${flavors}`;
       })
-      .join("\n");
-
-    const receivingText =
-      checkout.receiveMode === "Retirada no local"
-        ? "Vou retirar no local."
-        : `Prefiro receber via Moto Uber.\n📍 ${formatDeliveryAddress()}`;
+      .join("\n\n");
 
     const parts = [
-      `Oi, tudo bem? Quero fazer um pedido.`,
+      "Olá! Gostaria de pedir:",
       orderLines,
       `Total: ${formatCurrency(total)}`,
-      receivingText,
-      `Me chamo ${checkout.name} — WhatsApp: ${checkout.whatsapp}`,
+      `Meu nome é ${checkout.name.trim()}.`,
     ];
 
     if (checkout.notes.trim()) {
-      parts.push(`Observação: ${checkout.notes.trim()}`);
+      parts.push(`Observação:\n${checkout.notes.trim()}`);
     }
 
     return parts.join("\n\n");
@@ -308,7 +280,6 @@ export function CrunchPopPage() {
       />
       <HowItWorks />
       <StoreInfo />
-      <Footer />
 
       {/* Sticky checkout bar — appears when cart has items */}
       <div
@@ -340,7 +311,6 @@ export function CrunchPopPage() {
       <Toast message={toast} />
 
       <OrderConfirmationModal
-        address={formatDeliveryAddress()}
         cart={cart}
         checkout={checkout}
         isOpen={isConfirmationOpen}
@@ -358,7 +328,6 @@ export function CrunchPopPage() {
         isOpen={isCartOpen}
         status={status}
         total={total}
-        totalItems={totalItems}
         onCheckoutChange={setCheckout}
         onClose={() => setIsCartOpen(false)}
         onContinueShopping={() => setIsCartOpen(false)}
@@ -959,87 +928,62 @@ function HowItWorks() {
 
 function StoreInfo() {
   const whatsappUrl = `https://wa.me/${STORE_WHATSAPP}`;
-  const infoGroups: {
-    title: string;
-    lines: { label: string; href?: string }[];
-  }[] = [
-    {
-      title: "Menu",
-      lines: [
-        { label: "Cardápio", href: "#sabores" },
-        { label: "Como pedir", href: "#pedido" },
-      ],
-    },
-    {
-      title: "Atendimento",
-      lines: [{ label: STORE_WHATSAPP_DISPLAY, href: whatsappUrl }],
-    },
-    {
-      title: "Localização",
-      lines: [{ label: STORE_NEIGHBORHOOD }],
-    },
-    {
-      title: "Pagamento",
-      lines: [{ label: "Pix após confirmação" }],
-    },
-  ];
+  const instagramUrl = `https://instagram.com/${STORE_INSTAGRAM.replace("@", "")}`;
 
   return (
-    <section
-      className="px-5 py-5 sm:px-8 lg:py-8"
-      aria-label="Informações da loja"
-    >
-      <div className="mx-auto max-w-6xl rounded-[2rem] bg-chocolate px-6 py-8 text-warm shadow-soft sm:px-8">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {infoGroups.map((group) => (
-            <div key={group.title}>
-              <div className="mb-4 flex items-center gap-3">
-                <span
-                  className="h-1.5 w-1.5 rounded-full bg-caramel"
-                  aria-hidden="true"
-                />
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-caramel">
-                  {group.title}
-                </p>
-              </div>
-              <div className="space-y-2">
-                {group.lines.map((line) =>
-                  line.href ? (
-                    <a
-                      key={line.label}
-                      href={line.href}
-                      target={
-                        line.href.startsWith("http") ? "_blank" : undefined
-                      }
-                      rel={
-                        line.href.startsWith("http") ? "noreferrer" : undefined
-                      }
-                      className="block text-sm font-medium leading-6 text-warm/80 transition hover:text-caramel focus:outline-none focus:ring-2 focus:ring-caramel"
-                    >
-                      {line.label}
-                    </a>
-                  ) : (
-                    <p
-                      key={line.label}
-                      className="text-sm font-medium leading-6 text-warm/80"
-                    >
-                      {line.label}
-                    </p>
-                  ),
-                )}
-              </div>
-            </div>
-          ))}
+    <footer className="px-5 pb-10 pt-8 sm:px-8 lg:pt-10" aria-label="Rodapé">
+      <div className="mx-auto max-w-6xl border-t border-chocolate/10 pt-8">
+        <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-start">
+          <div className="space-y-4">
+            <BrandLockup compact />
+            <p className="max-w-sm text-sm font-medium leading-6 text-chocolate">
+              Pequenos lotes. Grandes momentos.
+            </p>
+          </div>
+
+          <div className="flex max-w-xl flex-wrap items-center gap-x-3 gap-y-3 text-sm font-medium leading-6 text-coffee md:justify-end md:text-right">
+            <span>Curitiba, PR</span>
+            <span className="text-caramel/60" aria-hidden="true">
+              ·
+            </span>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="transition hover:text-chocolate focus:outline-none focus:ring-2 focus:ring-caramel"
+            >
+              WhatsApp
+            </a>
+            <span className="text-caramel/60" aria-hidden="true">
+              ·
+            </span>
+            <a
+              href={instagramUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="transition hover:text-chocolate focus:outline-none focus:ring-2 focus:ring-caramel"
+            >
+              Instagram
+            </a>
+            <span className="text-caramel/60" aria-hidden="true">
+              ·
+            </span>
+            <span>Pix após confirmação.</span>
+          </div>
+        </div>
+
+        <div className="mt-8 flex flex-col gap-1 border-t border-chocolate/10 pt-5 text-xs leading-5 text-coffee/70 sm:flex-row sm:items-center sm:justify-between">
+          <p>© CrunchPop</p>
+          <p>Todos os direitos reservados.</p>
         </div>
       </div>
-    </section>
+    </footer>
   );
 }
 
 // ─── Order Confirmation Modal ────────────────────────────────────────────────
 
 function OrderConfirmationModal({
-  address,
   cart,
   checkout,
   isOpen,
@@ -1047,7 +991,6 @@ function OrderConfirmationModal({
   onSend,
   total,
 }: {
-  address: string;
   cart: CartItem[];
   checkout: CheckoutData;
   isOpen: boolean;
@@ -1055,8 +998,6 @@ function OrderConfirmationModal({
   onSend: () => void;
   total: number;
 }) {
-  const showAddress =
-    checkout.receiveMode === "Moto Uber / Uber Flash" && address.trim();
   const notes = checkout.notes.trim();
   const dialogRef = useRef<HTMLElement>(null);
 
@@ -1082,12 +1023,11 @@ function OrderConfirmationModal({
         }`}
       >
         <div className="border-b border-chocolate/10 px-6 py-6 sm:px-8">
-          <span className="luxury-eyebrow">Conferência</span>
           <h2
             id="confirmation-title"
-            className="mt-3 font-display text-3xl font-semibold text-chocolate sm:text-4xl"
+            className="font-display text-3xl font-semibold text-chocolate sm:text-4xl"
           >
-            Tudo certo?
+            Confira seu pedido
           </h2>
         </div>
 
@@ -1099,29 +1039,24 @@ function OrderConfirmationModal({
             >
               <div className="flex items-start justify-between gap-4">
                 <h3 className="font-display text-2xl font-semibold leading-tight text-chocolate">
-                  Baldinho {item.sizeName}
+                  CrunchPop {item.sizeName}
                 </h3>
-                {item.quantity > 1 && (
-                  <span className="rounded-full border border-caramel/25 px-3 py-1 text-xs font-semibold text-chocolate">
-                    {item.quantity}×
-                  </span>
-                )}
+                <span className="rounded-full border border-caramel/25 px-3 py-1 text-xs font-semibold text-chocolate">
+                  {item.quantity}×
+                </span>
               </div>
               <div className="mt-3 text-sm leading-6 text-coffee">
-                {item.kind === "classic" ? (
-                  <p className="font-display text-xl font-semibold italic text-chocolate">
+                {item.kind === "classic" && (
+                  <p className="mb-2 font-semibold text-chocolate">
                     {item.name}
                   </p>
-                ) : (
-                  <>
-                    <p className="font-semibold text-chocolate">Sabores</p>
-                    <ul className="mt-1 space-y-0.5">
-                      {item.flavors.map((flavor) => (
-                        <li key={flavor}>• {flavor}</li>
-                      ))}
-                    </ul>
-                  </>
                 )}
+                <p className="font-semibold text-chocolate">Sabores</p>
+                <ul className="mt-1 space-y-0.5">
+                  {item.flavors.map((flavor) => (
+                    <li key={flavor}>• {flavor}</li>
+                  ))}
+                </ul>
               </div>
               <p className="mt-3 font-display text-xl font-semibold text-chocolate">
                 {formatCurrency(item.price * item.quantity)}
@@ -1130,20 +1065,17 @@ function OrderConfirmationModal({
           ))}
 
           <ReviewLine label="Total" value={formatCurrency(total)} strong />
-          <ReviewLine label="Recebimento" value={checkout.receiveMode} />
-          {showAddress && <ReviewBlock label="Endereço" value={address} />}
-          <ReviewLine label="Cliente" value={checkout.name} />
-          <ReviewLine label="WhatsApp" value={checkout.whatsapp} />
+          <ReviewLine label="Nome" value={checkout.name.trim()} />
           {notes && <ReviewBlock label="Observações" value={notes} />}
         </div>
 
         <div className="space-y-4 border-t border-chocolate/10 bg-warm/85 px-6 py-6 sm:px-8">
           <div className="rounded-2xl border border-caramel/25 bg-cream px-5 py-4">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-caramel">
-              Próximo passo
-            </p>
-            <p className="mt-2 text-xs leading-6 text-coffee">
-              Confirmamos o horário e enviamos a chave Pix pelo WhatsApp.
+            <p className="text-xs leading-6 text-coffee">
+              Após abrir o WhatsApp, confirmaremos a disponibilidade,
+              informaremos o tempo de preparo e enviaremos a chave Pix e o
+              endereço para retirada. Caso prefira, você poderá solicitar um
+              Moto Uber ou Uber Flash para buscar o pedido.
             </p>
           </div>
 
@@ -1153,14 +1085,14 @@ function OrderConfirmationModal({
               onClick={onEdit}
               className="inline-flex min-h-12 items-center justify-center rounded-full border border-chocolate/10 bg-cream px-6 py-3 text-sm font-semibold text-chocolate transition hover:border-caramel hover:text-coffee focus:outline-none focus:ring-2 focus:ring-caramel"
             >
-              ← Editar pedido
+              Editar pedido
             </button>
             <button
               type="button"
               onClick={onSend}
               className="inline-flex min-h-12 items-center justify-center rounded-full bg-chocolate px-6 py-3 text-sm font-semibold text-warm shadow-soft transition hover:bg-coffee focus:outline-none focus:ring-2 focus:ring-caramel focus:ring-offset-2 focus:ring-offset-warm"
             >
-              Enviar para WhatsApp →
+              Confirmar e abrir WhatsApp
             </button>
           </div>
         </div>
@@ -1207,34 +1139,6 @@ function ReviewBlock({ label, value }: { label: string; value: string }) {
   );
 }
 
-// ─── Checkout Progress ───────────────────────────────────────────────────────
-
-function CheckoutProgress({ activeStep }: { activeStep: number }) {
-  const steps = ["Escolha", "Contato", "Conferir"];
-  return (
-    <div className="mt-5 rounded-2xl border border-chocolate/10 bg-warm px-4 py-4">
-      <p className="sr-only">
-        Etapas da finalização: escolha, contato e conferência.
-      </p>
-      <div className="grid grid-cols-3 gap-2">
-        {steps.map((step, index) => (
-          <div key={step} className="min-w-0">
-            <div
-              className={`h-1.5 rounded-full transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${index <= activeStep ? "bg-chocolate" : "bg-chocolate/12"}`}
-              aria-hidden="true"
-            />
-            <p
-              className={`mt-2 truncate text-[10px] font-semibold uppercase tracking-[0.14em] ${index <= activeStep ? "text-chocolate" : "text-coffee"}`}
-            >
-              {step}
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 // ─── Cart Drawer ─────────────────────────────────────────────────────────────
 
 function CartDrawer({
@@ -1243,7 +1147,6 @@ function CartDrawer({
   isOpen,
   status,
   total,
-  totalItems,
   onCheckoutChange,
   onClose,
   onContinueShopping,
@@ -1256,7 +1159,6 @@ function CartDrawer({
   isOpen: boolean;
   status: string;
   total: number;
-  totalItems: number;
   onCheckoutChange: (checkout: CheckoutData) => void;
   onClose: () => void;
   onContinueShopping: () => void;
@@ -1264,20 +1166,7 @@ function CartDrawer({
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onUpdateQuantity: (productId: string, quantity: number) => void;
 }) {
-  const isFlash = checkout.receiveMode === "Moto Uber / Uber Flash";
-  const hasCustomerInfo = Boolean(
-    checkout.name.trim() && checkout.whatsapp.trim(),
-  );
-  const hasReceivingInfo =
-    !isFlash || Boolean(checkout.address.trim() && checkout.number.trim());
-  const isReadyToReview =
-    cart.length > 0 && hasCustomerInfo && hasReceivingInfo;
-  const checkoutHint = !hasCustomerInfo
-    ? "Nome e WhatsApp para continuar."
-    : !hasReceivingInfo
-      ? "Informe o endereço de entrega."
-      : "Pronto para revisar.";
-  const progressStep = isReadyToReview ? 2 : cart.length > 0 ? 1 : 0;
+  const isCartEmpty = cart.length === 0;
 
   return (
     <div
@@ -1301,10 +1190,12 @@ function CartDrawer({
         <div className="flex items-center justify-between border-b border-chocolate/10 px-5 py-5 sm:px-7">
           <div>
             <h2 className="font-display text-2xl font-semibold text-chocolate">
-              Seu pedido.
+              {isCartEmpty ? "Seu carrinho" : "Seu pedido"}
             </h2>
             <p className="mt-1 max-w-xs text-xs leading-5 text-coffee">
-              Revise, ajuste e finalize quando estiver pronto.
+              {isCartEmpty
+                ? "Ainda não há nenhuma CrunchPop por aqui."
+                : "Revise, ajuste e finalize quando estiver pronto."}
             </p>
           </div>
           <button
@@ -1323,39 +1214,28 @@ function CartDrawer({
             {status}
           </p>
 
-          {cart.length === 0 ? (
-            <div className="rounded-[2rem] border border-dashed border-caramel/40 bg-warm p-8 text-center">
-              <ShoppingBag
-                className="mx-auto mb-4 h-7 w-7 text-caramel"
-                aria-hidden="true"
-              />
-              <p className="font-display text-2xl font-semibold text-chocolate">
-                Seu baldinho espera.
+          {isCartEmpty ? (
+            <div className="rounded-[1.75rem] border border-chocolate/10 bg-warm px-6 py-8 text-left shadow-card">
+              <span className="grid h-11 w-11 place-items-center rounded-full border border-caramel/25 bg-cream text-caramel">
+                <ShoppingBag className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <p className="mt-7 font-display text-3xl font-semibold leading-tight text-chocolate">
+                Vamos escolher a primeira?
               </p>
-              <p className="mt-2 text-sm leading-6 text-coffee">
-                Escolha o tamanho e os sabores. Cada detalhe importa.
+              <p className="mt-3 max-w-sm text-sm leading-7 text-coffee">
+                Escolha um clássico da casa ou crie sua própria combinação.
               </p>
-              <a
-                href="#escolha"
-                onClick={onContinueShopping}
-                className="luxury-cta group mt-6 w-full"
-              >
-                <span>Ver o cardápio</span>
-                <span className="luxury-cta-mark" aria-hidden="true">
-                  →
-                </span>
-              </a>
             </div>
           ) : (
             <div className="space-y-3">
               {cart.map((item) => (
                 <div
                   key={item.id}
-                  className="rounded-2xl border border-chocolate/10 bg-warm p-4"
+                  className="rounded-[1.5rem] border border-chocolate/10 bg-warm p-4 shadow-card"
                 >
                   <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <h3 className="font-display text-xl font-semibold italic text-chocolate">
+                    <div className="min-w-0">
+                      <h3 className="font-display text-xl font-semibold leading-tight text-chocolate">
                         {item.name}
                       </h3>
                       <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-caramel">
@@ -1373,7 +1253,7 @@ function CartDrawer({
                     <button
                       type="button"
                       onClick={() => onRemove(item.id)}
-                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-coffee transition hover:bg-cream hover:text-chocolate focus:outline-none focus:ring-2 focus:ring-caramel"
+                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-chocolate/10 text-coffee transition hover:border-caramel hover:bg-cream hover:text-chocolate focus:outline-none focus:ring-2 focus:ring-caramel"
                       aria-label={`Remover ${item.name}`}
                     >
                       <Trash2 className="h-4 w-4" aria-hidden="true" />
@@ -1412,125 +1292,25 @@ function CartDrawer({
 
           {cart.length > 0 && (
             <>
-              <CheckoutProgress activeStep={progressStep} />
-
-              <p className="mt-5 rounded-2xl border border-caramel/20 bg-warm px-4 py-3 text-xs leading-6 text-coffee">
-                Confirmamos o horário pelo WhatsApp. O pagamento é só depois.
-              </p>
-
               <form
                 id="checkout"
                 onSubmit={onSubmit}
                 className="mt-6 space-y-5"
               >
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <TextField
-                    label="Nome"
-                    value={checkout.name}
-                    required
-                    autoComplete="name"
-                    onChange={(value) =>
-                      onCheckoutChange({ ...checkout, name: value })
-                    }
-                  />
-                  <TextField
-                    label="WhatsApp"
-                    value={checkout.whatsapp}
-                    required
-                    inputMode="tel"
-                    type="tel"
-                    autoComplete="tel"
-                    onChange={(value) =>
-                      onCheckoutChange({ ...checkout, whatsapp: value })
-                    }
-                  />
-                </div>
-
-                <fieldset className="space-y-3">
-                  <legend className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-coffee">
-                    Como deseja receber?
-                  </legend>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {(
-                      ["Retirada no local", "Moto Uber / Uber Flash"] as const
-                    ).map((mode) => (
-                      <label
-                        key={mode}
-                        className={`flex min-h-12 cursor-pointer items-center justify-center rounded-full border px-4 py-3 text-center text-sm font-semibold transition ${
-                          checkout.receiveMode === mode
-                            ? "border-chocolate bg-chocolate text-warm"
-                            : "border-chocolate/10 bg-warm text-chocolate hover:border-caramel"
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          name="receiveMode"
-                          value={mode}
-                          checked={checkout.receiveMode === mode}
-                          onChange={() =>
-                            onCheckoutChange({ ...checkout, receiveMode: mode })
-                          }
-                          className="sr-only"
-                        />
-                        {mode}
-                      </label>
-                    ))}
-                  </div>
-                </fieldset>
-
-                {isFlash ? (
-                  <div className="space-y-4">
-                    <TextField
-                      label="Endereço"
-                      value={checkout.address}
-                      required
-                      autoComplete="street-address"
-                      onChange={(value) =>
-                        onCheckoutChange({ ...checkout, address: value })
-                      }
-                    />
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <TextField
-                        label="Número"
-                        value={checkout.number}
-                        required
-                        inputMode="numeric"
-                        autoComplete="address-line2"
-                        onChange={(value) =>
-                          onCheckoutChange({ ...checkout, number: value })
-                        }
-                      />
-                      <TextField
-                        label="Complemento"
-                        value={checkout.complement}
-                        autoComplete="address-line3"
-                        onChange={(value) =>
-                          onCheckoutChange({ ...checkout, complement: value })
-                        }
-                      />
-                    </div>
-                    <TextField
-                      label="Ponto de referência"
-                      value={checkout.reference}
-                      onChange={(value) =>
-                        onCheckoutChange({ ...checkout, reference: value })
-                      }
-                    />
-                    <p className="rounded-2xl border border-caramel/25 bg-warm px-4 py-3 text-xs leading-6 text-coffee">
-                      O cliente fica responsável por solicitar o transporte após
-                      a confirmação do pedido.
-                    </p>
-                  </div>
-                ) : (
-                  <p className="rounded-2xl border border-caramel/25 bg-warm px-4 py-3 text-xs leading-6 text-coffee">
-                    Após confirmar, enviaremos o endereço e o horário em que sua
-                    CrunchPop estará pronta para retirada.
-                  </p>
-                )}
+                <TextField
+                  label="Como podemos te chamar?"
+                  value={checkout.name}
+                  required
+                  autoComplete="name"
+                  placeholder="Seu nome"
+                  onChange={(value) =>
+                    onCheckoutChange({ ...checkout, name: value })
+                  }
+                />
 
                 <label className="block">
-                  <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-coffee">
-                    Observações
+                  <span className="mb-2 block text-sm font-semibold text-chocolate">
+                    Quer acrescentar alguma observação?
                   </span>
                   <textarea
                     value={checkout.notes}
@@ -1541,9 +1321,16 @@ function CartDrawer({
                       })
                     }
                     className="min-h-24 w-full resize-none rounded-2xl border border-chocolate/10 bg-warm px-4 py-3 text-sm text-chocolate outline-none transition placeholder:text-coffee/55 focus:border-caramel focus:ring-2 focus:ring-caramel/20"
-                    placeholder="Ex.: sem canela"
+                    placeholder="Ex.: preferência de horário ou alguma informação importante."
                   />
                 </label>
+
+                <p className="rounded-2xl border border-caramel/20 bg-warm px-4 py-3 text-xs leading-6 text-coffee">
+                  Após abrir o WhatsApp, confirmaremos a disponibilidade,
+                  informaremos o tempo de preparo e enviaremos a chave Pix e o
+                  endereço para retirada. Caso prefira, você poderá solicitar um
+                  Moto Uber ou Uber Flash para buscar o pedido.
+                </p>
               </form>
             </>
           )}
@@ -1551,22 +1338,28 @@ function CartDrawer({
 
         {/* Footer */}
         <div className="border-t border-chocolate/10 bg-warm/92 px-5 py-5 backdrop-blur sm:px-7">
-          {cart.length === 0 ? (
-            <a
-              href="#escolha"
-              onClick={onContinueShopping}
-              className="luxury-cta group w-full"
-            >
-              <span>Escolher minha CrunchPop</span>
-              <span className="luxury-cta-mark" aria-hidden="true">
-                →
-              </span>
-            </a>
+          {isCartEmpty ? (
+            <div className="space-y-3">
+              <a
+                href="#escolha"
+                onClick={onContinueShopping}
+                className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-chocolate px-6 py-3 text-sm font-semibold text-warm shadow-soft transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-coffee active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-caramel focus:ring-offset-2 focus:ring-offset-warm"
+              >
+                Começar meu pedido
+              </a>
+              <button
+                type="button"
+                onClick={onClose}
+                className="min-h-10 w-full text-center text-xs font-semibold text-coffee transition hover:text-chocolate focus:outline-none focus:ring-2 focus:ring-caramel"
+              >
+                Continuar navegando
+              </button>
+            </div>
           ) : (
             <>
               <div className="mb-4 flex items-center justify-between">
-                <span className="text-sm text-coffee">
-                  {totalItems} {totalItems === 1 ? "item" : "itens"}
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-coffee">
+                  Total
                 </span>
                 <strong className="font-display text-3xl font-semibold text-chocolate">
                   {formatCurrency(total)}
@@ -1577,10 +1370,10 @@ function CartDrawer({
                 form="checkout"
                 className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-chocolate px-6 py-3 text-sm font-semibold text-warm shadow-soft transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-coffee active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-caramel focus:ring-offset-2 focus:ring-offset-warm"
               >
-                Revisar pedido
+                Abrir conversa no WhatsApp
               </button>
               <p className="mt-3 text-center text-xs leading-5 text-coffee">
-                {checkoutHint}
+                Você poderá revisar tudo antes de enviar o pedido pelo WhatsApp.
               </p>
             </>
           )}
@@ -1620,6 +1413,7 @@ function TextField({
   inputMode,
   label,
   onChange,
+  placeholder,
   required,
   type = "text",
   value,
@@ -1628,13 +1422,14 @@ function TextField({
   inputMode?: "text" | "tel" | "numeric";
   label: string;
   onChange: (value: string) => void;
+  placeholder?: string;
   required?: boolean;
   type?: "text" | "tel";
   value: string;
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-coffee">
+      <span className="mb-2 block text-sm font-semibold text-chocolate">
         {label}
         {required && <span className="text-caramel"> *</span>}
       </span>
@@ -1646,27 +1441,10 @@ function TextField({
         autoComplete={autoComplete}
         inputMode={inputMode}
         onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
         className="min-h-12 w-full rounded-full border border-chocolate/10 bg-warm px-4 py-3 text-sm text-chocolate outline-none transition placeholder:text-coffee/55 focus:border-caramel focus:ring-2 focus:ring-caramel/20"
       />
     </label>
-  );
-}
-
-// ─── Footer ──────────────────────────────────────────────────────────────────
-
-function Footer() {
-  return (
-    <footer className="px-5 pb-10 pt-6 sm:px-8">
-      <div className="mx-auto grid max-w-6xl justify-items-start gap-5 border-t border-chocolate/10 pt-8 text-left text-sm text-coffee md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-6">
-        <BrandLockup compact />
-        <p className="text-sm font-medium leading-6 text-chocolate md:text-center">
-          pequenos lotes. grandes momentos.
-        </p>
-        <p className="max-w-[18rem] text-xs font-medium uppercase leading-6 tracking-[0.18em] text-caramel md:max-w-none md:text-right">
-          {STORE_INSTAGRAM} · {STORE_LOCATION}
-        </p>
-      </div>
-    </footer>
   );
 }
 
