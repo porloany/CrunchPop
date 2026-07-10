@@ -407,6 +407,9 @@ function CardsPreview() {
                     style={{ objectPosition: product.imagePosition }}
                   />
                 </div>
+                <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.18em] text-caramel">
+                  {product.note}
+                </p>
                 <h3 className="font-display text-3xl font-semibold italic text-chocolate">
                   {product.name}
                 </h3>

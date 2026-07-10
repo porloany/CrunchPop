@@ -1,6 +1,7 @@
 export type ClassicProduct = {
   id: string;
   name: string;
+  note: string;
   description: string;
   badge?: string;
   flavors: string[];
@@ -10,6 +11,7 @@ export type ClassicProduct = {
 export type CustomFlavor = {
   id: string;
   name: string;
+  note: string;
   description: string;
   imagePosition: string;
 };
@@ -40,6 +42,7 @@ export const classicProducts: ClassicProduct[] = [
   {
     id: "classico-leite-em-po",
     name: "Leite em pó",
+    note: "Doce e delicado",
     description:
       "Creme de leite em pó. Delicada, cremosa e irresistível.",
     badge: "Favorito da casa",
@@ -49,6 +52,7 @@ export const classicProducts: ClassicProduct[] = [
   {
     id: "classico-avela",
     name: "Avelã",
+    note: "Intenso e cremoso",
     description: "Creme de avelã. Intensa, cremosa e marcante.",
     flavors: ["Avelã"],
     imagePosition: "42% 45%"
@@ -56,6 +60,7 @@ export const classicProducts: ClassicProduct[] = [
   {
     id: "classico-kinder-bueno",
     name: "Kinder Bueno",
+    note: "Suave e envolvente",
     description:
       "Chocolate, creme de avelã e uma combinação delicada.",
     flavors: ["Kinder Bueno"],
@@ -64,6 +69,7 @@ export const classicProducts: ClassicProduct[] = [
   {
     id: "classico-ovomaltine",
     name: "Ovomaltine",
+    note: "Crocante e marcante",
     description: "Creme de chocolate com flocos crocantes.",
     flavors: ["Ovomaltine"],
     imagePosition: "48% 44%"
@@ -74,24 +80,28 @@ export const customFlavors: CustomFlavor[] = [
   {
     id: "leite-em-po",
     name: "Leite em pó",
+    note: "Doce e delicado",
     description: "Delicado, cremoso e suave.",
     imagePosition: "50% 42%"
   },
   {
     id: "avela",
     name: "Avelã",
+    note: "Intenso e cremoso",
     description: "Cremoso, intenso e marcante.",
     imagePosition: "42% 45%"
   },
   {
     id: "kinder-bueno",
     name: "Kinder Bueno",
+    note: "Suave e envolvente",
     description: "Chocolate com creme de avelã.",
     imagePosition: "55% 50%"
   },
   {
     id: "ovomaltine",
     name: "Ovomaltine",
+    note: "Crocante e marcante",
     description: "Creme de chocolate com flocos crocantes.",
     imagePosition: "48% 44%"
   }

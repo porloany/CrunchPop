@@ -290,7 +290,6 @@ export function CrunchPopPage() {
       className={`relative overflow-hidden transition-[padding] duration-500 ${totalItems > 0 ? "pb-[72px]" : ""}`}
     >
       <Header totalItems={totalItems} onCartClick={() => setIsCartOpen(true)} />
-      <Hero onCtaClick={() => setIsCartOpen(false)} />
       <ChoiceSection
         purchasePath={purchasePath}
         onSelectPath={selectPurchasePath}
@@ -324,7 +323,7 @@ export function CrunchPopPage() {
             <span className="text-sm font-medium text-warm/60">
               {totalItems} {totalItems === 1 ? "item" : "itens"}
             </span>
-            <strong className="font-display text-2xl font-semibold italic text-caramel">
+            <strong className="font-display text-xl font-semibold italic text-caramel sm:text-2xl">
               {formatCurrency(total)}
             </strong>
           </div>
@@ -394,18 +393,15 @@ function Header({
           type="button"
           onClick={onCartClick}
           aria-label={`Abrir carrinho${totalItems > 0 ? `, ${totalItems > 99 ? "99+" : totalItems} ${totalItems === 1 ? "item" : "itens"}` : ""}`}
-          className="group inline-flex min-h-11 items-center gap-2 rounded-full bg-chocolate py-1.5 pl-4 pr-1.5 text-sm font-semibold text-warm shadow-card transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-coffee active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-caramel focus:ring-offset-2 focus:ring-offset-cream"
+          className="group inline-flex min-h-11 items-center gap-2 rounded-full bg-chocolate py-1.5 pl-5 pr-1.5 text-sm font-semibold text-warm shadow-card transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-coffee active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-caramel focus:ring-offset-2 focus:ring-offset-cream"
         >
-          <ShoppingBag className="h-4 w-4" aria-hidden="true" />
-          Carrinho
-          {totalItems > 0 && (
-            <span
-              aria-hidden="true"
-              className="grid h-8 min-w-8 place-items-center rounded-full bg-caramel px-2 text-xs text-chocolate transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
-            >
-              {totalItems > 99 ? "99+" : totalItems}
-            </span>
-          )}
+          Meu baldinho
+          <span
+            aria-hidden="true"
+            className="grid h-8 min-w-8 place-items-center rounded-full bg-caramel px-2 text-xs text-chocolate transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-105"
+          >
+            {totalItems > 99 ? "99+" : totalItems}
+          </span>
         </button>
       </div>
     </header>
@@ -434,21 +430,14 @@ function Hero({ onCtaClick }: { onCtaClick: () => void }) {
       className="relative flex min-h-[88svh] flex-col items-center justify-center px-5 py-16 sm:px-8 sm:py-20 lg:py-24"
     >
       <div className="animate-fade mx-auto w-full max-w-4xl text-center">
-        {/* Eyebrow */}
-        <p className="mb-8 flex items-center justify-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-caramel">
-          <span aria-hidden="true">·</span>
-          Baldinho artesanal de sobremesa
-          <span aria-hidden="true">·</span>
-        </p>
-
         {/* Brand name as hero */}
-        <h1 className="font-display font-semibold leading-[0.95] text-[clamp(4rem,16vw,9rem)]">
+        <h1 className="font-display font-semibold leading-[0.95] text-[clamp(3rem,13vw,7rem)]">
           <span className="text-chocolate">Crunch</span>
           <em className="italic text-caramel">Pop</em>
         </h1>
 
         {/* Tagline */}
-        <p className="mx-auto mt-6 max-w-sm font-display text-lg italic leading-relaxed text-coffee sm:max-w-md sm:text-xl lg:text-2xl">
+        <p className="mx-auto mt-6 max-w-sm font-display text-base italic leading-relaxed text-coffee sm:max-w-md sm:text-lg lg:text-xl">
           O som que antecede o prazer —<br className="sm:hidden" /> preparado
           diariamente.
         </p>
@@ -467,16 +456,6 @@ function Hero({ onCtaClick }: { onCtaClick: () => void }) {
           >
             Ver sabores
           </a>
-        </div>
-      </div>
-
-      {/* Subtle scroll indicator */}
-      <div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        aria-hidden="true"
-      >
-        <div className="flex h-9 w-5 items-start justify-center rounded-full border border-chocolate/15 pt-1.5">
-          <div className="h-2 w-0.5 animate-bounce rounded-full bg-caramel/50" />
         </div>
       </div>
     </section>
@@ -502,15 +481,18 @@ function ChoiceSection({
   }
 
   return (
-    <section id="escolha" className="px-5 py-16 sm:px-8 lg:py-24">
+    <section id="escolha" className="px-5 pb-16 pt-20 sm:px-8 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-10 text-center sm:mb-12">
-          <span className="luxury-eyebrow">Cardápio</span>
-          <h2 className="mt-5 font-display text-4xl font-semibold leading-tight text-chocolate sm:text-5xl lg:text-6xl">
-            Escolha sua CrunchPop
+        <div className="mb-12 text-center sm:mb-14">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-caramel">
+            Escolha seu baldinho
+          </p>
+          <h2 className="mx-auto mt-6 max-w-3xl font-display text-[2rem] font-semibold leading-[1.08] text-chocolate sm:text-5xl lg:text-6xl">
+            Quatro sabores. Um ritual.
           </h2>
-          <p className="mx-auto mt-4 max-w-md text-sm leading-7 text-coffee">
-            Cada baldinho preparado no dia. Escolha o seu.
+          <p className="mx-auto mt-6 max-w-[24rem] text-sm leading-7 text-coffee sm:max-w-lg sm:text-base sm:leading-8">
+            Cada baldinho é preparado na hora, com o mesmo caramelo feito em
+            pequenos lotes. Escolha um — ou monte sua combinação.
           </p>
         </div>
 
@@ -542,7 +524,7 @@ function ChoiceSection({
                 Combinações prontas
               </span>
               <h3
-                className={`mt-2 font-display text-4xl font-semibold leading-tight ${purchasePath === "classic" ? "text-warm" : "text-chocolate"}`}
+                className={`mt-2 font-display text-3xl font-semibold leading-tight sm:text-4xl ${purchasePath === "classic" ? "text-warm" : "text-chocolate"}`}
               >
                 Clássicos
               </h3>
@@ -584,7 +566,7 @@ function ChoiceSection({
                 Do seu jeito
               </span>
               <h3
-                className={`mt-2 font-display text-4xl font-semibold leading-tight ${purchasePath === "custom" ? "text-warm" : "text-chocolate"}`}
+                className={`mt-2 font-display text-3xl font-semibold leading-tight sm:text-4xl ${purchasePath === "custom" ? "text-warm" : "text-chocolate"}`}
               >
                 Monte a sua
               </h3>
@@ -697,13 +679,18 @@ function ProductsSection({
 
                     {/* Info — grows to fill card height for alignment */}
                     <div className="flex flex-1 flex-col p-3 sm:p-4 lg:p-5">
-                      {/* Name */}
-                      <h3 className="font-display text-xl font-semibold leading-tight text-chocolate sm:text-2xl lg:text-3xl">
+                      <p className="mb-1.5 text-[9px] font-medium uppercase tracking-[0.18em] text-caramel sm:text-[10px]">
+                        {product.note}
+                      </p>
+                      <h3 className="font-display text-lg font-semibold italic leading-tight text-chocolate sm:text-xl lg:text-2xl">
                         {product.name}
                       </h3>
+                      <p className="mt-1 line-clamp-2 text-[11px] leading-4 text-coffee sm:text-xs sm:leading-5">
+                        {product.description}
+                      </p>
 
                       {/* Size pills */}
-                      <div className="mt-2.5 flex flex-wrap gap-1.5">
+                      <div className="mt-3 flex flex-wrap gap-1.5">
                         {sizeOptions.map((size) => (
                           <button
                             key={size.id}
@@ -728,7 +715,7 @@ function ProductsSection({
 
                       {/* Price + CTA — always at card bottom */}
                       <div className="mt-3 flex items-center justify-between gap-2 border-t border-chocolate/10 pt-3">
-                        <p className="font-display text-lg font-semibold text-chocolate sm:text-xl lg:text-2xl">
+                        <p className="font-display text-lg font-semibold text-chocolate sm:text-xl">
                           {formatCurrency(selectedClassicSize.price)}
                         </p>
                         <button
@@ -753,19 +740,19 @@ function ProductsSection({
           <div className="animate-rise">
             <SectionHeader
               eyebrow="Combinação livre"
-              title="Monte a sua"
-              subtitle="Escolha o tamanho. Escolha os sabores. Pronto."
+              title="Monte seu baldinho"
+              subtitle="Escolha o tamanho e depois os sabores. Simples, direto e do seu jeito."
             />
 
-            <div className="luxury-shell mx-auto max-w-3xl">
-              <div className="luxury-core p-5 sm:p-8">
+            <div className="mx-auto max-w-3xl rounded-[1.75rem] border border-chocolate/10 bg-warm/65 p-4 shadow-card sm:p-6">
+              <div className="space-y-7">
                 {/* Step 1 — Size */}
                 <div>
-                  <div className="mb-5 flex items-center gap-3">
+                  <div className="mb-4 flex items-center gap-3">
                     <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-chocolate text-[10px] font-semibold text-warm">
                       1
                     </span>
-                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-coffee">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-coffee">
                       Escolha o tamanho
                     </p>
                   </div>
@@ -776,22 +763,22 @@ function ProductsSection({
                         type="button"
                         onClick={() => onSelectSize(size.id)}
                         aria-pressed={selectedSizeId === size.id}
-                        className={`min-h-36 rounded-2xl border p-5 text-left transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+                        className={`min-h-[7.5rem] rounded-[1.35rem] border p-4 text-left transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] sm:p-5 ${
                           selectedSizeId === size.id
                             ? "border-chocolate bg-chocolate text-warm shadow-card"
                             : "border-chocolate/10 bg-warm text-chocolate hover:border-caramel/45"
                         }`}
                       >
-                        <span className="block font-display text-4xl font-semibold">
+                        <span className="block font-display text-2xl font-semibold">
                           {size.name}
                         </span>
                         <span
-                          className={`mt-3 block text-sm font-semibold ${selectedSizeId === size.id ? "text-warm/70" : "text-coffee"}`}
+                          className={`mt-2 block text-sm font-semibold ${selectedSizeId === size.id ? "text-warm/70" : "text-coffee"}`}
                         >
                           Até {size.maxFlavors} sabores
                         </span>
                         <span
-                          className={`mt-2 block font-display text-2xl font-semibold ${selectedSizeId === size.id ? "text-warm" : "text-chocolate"}`}
+                          className={`mt-2 block font-display text-xl font-semibold ${selectedSizeId === size.id ? "text-warm" : "text-chocolate"}`}
                         >
                           {formatCurrency(size.price)}
                         </span>
@@ -802,17 +789,17 @@ function ProductsSection({
 
                 {/* Step 2 — Flavors (only when size is selected) */}
                 {selectedSize && (
-                  <div className="animate-rise mt-8 border-t border-chocolate/10 pt-8">
-                    <div className="mb-5 flex items-center justify-between gap-4">
+                  <div className="animate-rise border-t border-chocolate/10 pt-7">
+                    <div className="mb-4 flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3">
                         <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-chocolate text-[10px] font-semibold text-warm">
                           2
                         </span>
-                        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-coffee">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-coffee">
                           Escolha os sabores
                         </p>
                       </div>
-                      <span className="rounded-full border border-caramel/25 bg-warm px-3 py-1 text-xs font-semibold text-chocolate">
+                      <span className="rounded-full border border-caramel/25 bg-cream px-3 py-1 text-xs font-semibold text-chocolate">
                         {flavorCounter}
                       </span>
                     </div>
@@ -833,14 +820,17 @@ function ProductsSection({
                             onClick={() => onToggleFlavor(flavor.id)}
                             disabled={isDisabled}
                             aria-pressed={isSelected}
-                            className={`flex min-h-[5rem] items-center justify-between rounded-2xl border px-4 py-4 text-left transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+                            className={`flex min-h-[4.5rem] items-center justify-between gap-4 rounded-[1.35rem] border px-4 py-3.5 text-left transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
                               isSelected
                                 ? "border-chocolate bg-cream shadow-card"
                                 : "border-chocolate/10 bg-warm hover:border-caramel/45"
                             } ${isDisabled ? "opacity-40" : ""}`}
                           >
                             <span>
-                              <span className="block font-display text-3xl font-semibold italic text-chocolate">
+                              <span className="mb-1 block text-[10px] font-medium uppercase tracking-[0.18em] text-caramel">
+                                {flavor.note}
+                              </span>
+                              <span className="block font-display text-xl font-semibold text-chocolate sm:text-2xl">
                                 {flavor.name}
                               </span>
                               <span
@@ -854,7 +844,7 @@ function ProductsSection({
                               </span>
                             </span>
                             <span
-                              className={`grid h-6 w-6 shrink-0 place-items-center rounded border text-xs font-semibold ${
+                              className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border text-xs font-semibold ${
                                 isSelected
                                   ? "border-chocolate bg-chocolate text-warm"
                                   : "border-caramel/35 text-caramel"
@@ -883,7 +873,7 @@ function ProductsSection({
                         ? "Escolha pelo menos um sabor"
                         : addedCartItemId === selectedCartItemId
                           ? "Adicionado ✓"
-                          : "Adicionar ao carrinho"}
+                          : "Adicionar ao baldinho"}
                     </button>
                   </div>
                 )}
@@ -910,7 +900,7 @@ function SectionHeader({
   return (
     <div className="mb-8 max-w-2xl">
       <span className="luxury-eyebrow">{eyebrow}</span>
-      <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-chocolate sm:text-5xl">
+      <h2 className="mt-4 font-display text-3xl font-semibold leading-tight text-chocolate sm:text-4xl">
         {title}
       </h2>
       <p className="mt-3 text-sm leading-7 text-coffee">{subtitle}</p>
@@ -929,10 +919,10 @@ function HowItWorks() {
 
   return (
     <section id="pedido" className="px-5 py-10 sm:px-8 lg:py-14">
-      <div className="mx-auto grid max-w-6xl gap-5 border-y border-chocolate/10 py-8 md:grid-cols-[0.55fr_1.45fr] md:items-center">
+      <div className="mx-auto grid max-w-6xl gap-5 py-8 md:grid-cols-[0.55fr_1.45fr] md:items-center">
         <div>
           <span className="luxury-eyebrow">Simples assim</span>
-          <h2 className="mt-4 font-display text-3xl font-semibold text-chocolate sm:text-4xl">
+          <h2 className="mt-4 font-display text-2xl font-semibold text-chocolate sm:text-3xl">
             Como pedir
           </h2>
         </div>
@@ -1095,7 +1085,7 @@ function OrderConfirmationModal({
           <span className="luxury-eyebrow">Conferência</span>
           <h2
             id="confirmation-title"
-            className="mt-3 font-display text-4xl font-semibold text-chocolate sm:text-5xl"
+            className="mt-3 font-display text-3xl font-semibold text-chocolate sm:text-4xl"
           >
             Tudo certo?
           </h2>
@@ -1108,7 +1098,7 @@ function OrderConfirmationModal({
               className="rounded-2xl border border-chocolate/10 bg-warm p-5"
             >
               <div className="flex items-start justify-between gap-4">
-                <h3 className="font-display text-3xl font-semibold leading-tight text-chocolate">
+                <h3 className="font-display text-2xl font-semibold leading-tight text-chocolate">
                   Baldinho {item.sizeName}
                 </h3>
                 {item.quantity > 1 && (
@@ -1119,7 +1109,7 @@ function OrderConfirmationModal({
               </div>
               <div className="mt-3 text-sm leading-6 text-coffee">
                 {item.kind === "classic" ? (
-                  <p className="font-display text-2xl font-semibold italic text-chocolate">
+                  <p className="font-display text-xl font-semibold italic text-chocolate">
                     {item.name}
                   </p>
                 ) : (
@@ -1133,7 +1123,7 @@ function OrderConfirmationModal({
                   </>
                 )}
               </div>
-              <p className="mt-3 font-display text-2xl font-semibold text-chocolate">
+              <p className="mt-3 font-display text-xl font-semibold text-chocolate">
                 {formatCurrency(item.price * item.quantity)}
               </p>
             </article>
@@ -1196,7 +1186,7 @@ function ReviewLine({
         {label}
       </p>
       <p
-        className={`text-right ${strong ? "font-display text-3xl font-semibold text-chocolate" : "text-sm font-semibold text-chocolate"}`}
+        className={`text-right ${strong ? "font-display text-2xl font-semibold text-chocolate" : "text-sm font-semibold text-chocolate"}`}
       >
         {value}
       </p>
@@ -1310,7 +1300,7 @@ function CartDrawer({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-chocolate/10 px-5 py-5 sm:px-7">
           <div>
-            <h2 className="font-display text-3xl font-semibold text-chocolate">
+            <h2 className="font-display text-2xl font-semibold text-chocolate">
               Seu pedido.
             </h2>
             <p className="mt-1 max-w-xs text-xs leading-5 text-coffee">
@@ -1339,7 +1329,7 @@ function CartDrawer({
                 className="mx-auto mb-4 h-7 w-7 text-caramel"
                 aria-hidden="true"
               />
-              <p className="font-display text-3xl font-semibold text-chocolate">
+              <p className="font-display text-2xl font-semibold text-chocolate">
                 Seu baldinho espera.
               </p>
               <p className="mt-2 text-sm leading-6 text-coffee">
@@ -1365,7 +1355,7 @@ function CartDrawer({
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <h3 className="font-display text-2xl font-semibold italic text-chocolate">
+                      <h3 className="font-display text-xl font-semibold italic text-chocolate">
                         {item.name}
                       </h3>
                       <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-caramel">
@@ -1411,7 +1401,7 @@ function CartDrawer({
                         <Plus className="h-4 w-4" aria-hidden="true" />
                       </QuantityButton>
                     </div>
-                    <p className="font-display text-2xl font-semibold text-chocolate">
+                    <p className="font-display text-xl font-semibold text-chocolate">
                       {formatCurrency(item.price * item.quantity)}
                     </p>
                   </div>
@@ -1578,7 +1568,7 @@ function CartDrawer({
                 <span className="text-sm text-coffee">
                   {totalItems} {totalItems === 1 ? "item" : "itens"}
                 </span>
-                <strong className="font-display text-4xl font-semibold text-chocolate">
+                <strong className="font-display text-3xl font-semibold text-chocolate">
                   {formatCurrency(total)}
                 </strong>
               </div>
@@ -1667,12 +1657,12 @@ function TextField({
 function Footer() {
   return (
     <footer className="px-5 pb-10 pt-6 sm:px-8">
-      <div className="mx-auto grid max-w-6xl gap-6 border-t border-chocolate/10 pt-8 text-sm text-coffee md:grid-cols-[1fr_auto_1fr] md:items-center">
+      <div className="mx-auto grid max-w-6xl justify-items-start gap-5 border-t border-chocolate/10 pt-8 text-left text-sm text-coffee md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-6">
         <BrandLockup compact />
-        <p className="text-center text-sm font-medium text-chocolate">
+        <p className="text-sm font-medium leading-6 text-chocolate md:text-center">
           pequenos lotes. grandes momentos.
         </p>
-        <p className="text-xs font-medium uppercase tracking-[0.18em] text-caramel md:text-right">
+        <p className="max-w-[18rem] text-xs font-medium uppercase leading-6 tracking-[0.18em] text-caramel md:max-w-none md:text-right">
           {STORE_INSTAGRAM} · {STORE_LOCATION}
         </p>
       </div>
