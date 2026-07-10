@@ -12,20 +12,21 @@ import {
   Trash2,
   X
 } from "lucide-react";
+import { BrandLogo } from "@/components/brand-logo";
 import { formatCurrency } from "@/lib/format";
 import { classicProducts, customFlavors, sizeOptions } from "@/lib/products";
 import { STORE_INSTAGRAM, STORE_LOCATION } from "@/lib/store";
 
 export const metadata: Metadata = {
-  title: "CrunchPop | Presentation",
-  description: "Revisao visual de UX e branding da CrunchPop."
+  title: "CrunchPop | Apresentação",
+  description: "Revisão visual de UX e branding da CrunchPop."
 };
 
 const mockCart = [
   {
-    name: "Leite em po",
+    name: "Leite em pó",
     sizeName: "500 ml",
-    flavors: ["Leite em po"],
+    flavors: ["Leite em pó"],
     quantity: 1,
     price: 23,
     kind: "classic"
@@ -33,7 +34,7 @@ const mockCart = [
   {
     name: "CrunchPop 1 litro",
     sizeName: "1 litro",
-    flavors: ["Avela", "Kinder Bueno", "Ovomaltine"],
+    flavors: ["Avelã", "Kinder Bueno", "Ovomaltine"],
     quantity: 1,
     price: 38,
     kind: "custom"
@@ -70,7 +71,7 @@ export default function PresentationPage() {
       <PresentationSection label="Carrinho" index="07">
         <CartPreview />
       </PresentationSection>
-      <PresentationSection label="Rodape" index="08">
+      <PresentationSection label="Rodapé" index="08">
         <FooterPreview />
       </PresentationSection>
     </main>
@@ -86,12 +87,12 @@ function PresentationNav() {
     "Checkout",
     "Modal",
     "Carrinho",
-    "Rodape"
+    "Rodapé"
   ];
 
   return (
     <header className="fixed left-1/2 top-4 z-40 hidden -translate-x-1/2 rounded-full border border-chocolate/10 bg-warm/85 px-3 py-2 shadow-card backdrop-blur-xl lg:block">
-      <nav aria-label="Secoes da apresentacao">
+      <nav aria-label="Seções da apresentação">
         <ul className="flex items-center gap-1">
           {items.map((item, index) => (
             <li key={item}>
@@ -152,7 +153,7 @@ function PresentationSection({
               tone === "dark" ? "text-warm/72" : "text-coffee"
             }`}
           >
-            Revisao visual de UX e branding. Esta tela e apenas demonstrativa.
+            Revisão visual de UX e branding. Esta tela é apenas demonstrativa.
           </p>
         </aside>
         <div>{children}</div>
@@ -163,24 +164,14 @@ function PresentationSection({
 
 function BrandLockup({ compact = false }: { compact?: boolean }) {
   return (
-    <div>
-      <p
-        className={`font-display font-semibold leading-none tracking-normal text-chocolate ${
-          compact ? "text-3xl" : "text-5xl sm:text-6xl"
-        }`}
-      >
-        Crunch<span className="text-caramel">Pop</span>
-      </p>
-      {!compact && (
-        <div className="mt-5 flex items-center gap-4">
-          <span className="h-px w-10 bg-caramel/70" aria-hidden="true" />
-          <p className="text-[11px] font-medium uppercase tracking-[0.38em] text-coffee">
-            Pipocas artesanais
-          </p>
-          <span className="h-px w-10 bg-caramel/70" aria-hidden="true" />
-        </div>
-      )}
-    </div>
+    <BrandLogo
+      compact={compact}
+      className={
+        compact
+          ? "h-10 w-[170px] sm:h-11 sm:w-[188px]"
+          : "h-[188px] w-[340px] max-w-full sm:h-[216px] sm:w-[390px]"
+      }
+    />
   );
 }
 
@@ -188,18 +179,39 @@ function HeroPreview() {
   return (
     <div className="grid items-center gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
       <div>
-        <p className="luxury-eyebrow mb-7">Sobremesa artesanal em Curitiba</p>
+        <p className="mb-7 text-[11px] font-semibold uppercase tracking-[0.28em] text-caramel">
+          Sobremesa artesanal em Curitiba
+        </p>
         <h2 className="max-w-3xl font-display text-[3.55rem] font-semibold leading-[0.94] text-chocolate sm:text-7xl lg:text-8xl">
-          Pipoca, como voce nunca experimentou.
+          Monte sua CrunchPop.
         </h2>
         <p className="mt-7 max-w-xl text-base leading-8 text-coffee sm:text-lg">
-          Pipocas caramelizadas, cobertas com chocolates e cremes selecionados.
-          Preparadas diariamente em pequenos lotes para preservar aquilo que
-          mais importa: a crocancia perfeita.
+          Escolha um clássico da casa ou crie sua combinação. Finalize pelo
+          WhatsApp em poucos toques.
         </p>
+        <div className="mt-8 max-w-xl border-y border-chocolate/10">
+          {sizeOptions.map((size) => (
+            <div
+              key={size.id}
+              className="flex items-baseline justify-between gap-4 border-b border-chocolate/10 py-3 last:border-b-0"
+            >
+              <div>
+                <p className="font-display text-3xl font-semibold text-chocolate">
+                  {size.name}
+                </p>
+                <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-coffee">
+                  Até {size.maxFlavors} sabores
+                </p>
+              </div>
+              <p className="text-sm font-semibold text-caramel">
+                {formatCurrency(size.price)}
+              </p>
+            </div>
+          ))}
+        </div>
         <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
           <span className="luxury-cta group w-full sm:w-auto">
-            <span>Escolher minha CrunchPop</span>
+            <span>Montar agora</span>
             <span className="luxury-cta-mark" aria-hidden="true">
               →
             </span>
@@ -236,7 +248,7 @@ function ProductImageFrame() {
         </div>
       </div>
       <div className="absolute bottom-5 left-5 rounded-full border border-caramel/25 bg-warm/95 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-chocolate shadow-card">
-        Producao diaria
+        Produção diária
       </div>
     </div>
   );
@@ -248,7 +260,7 @@ function ManifestoPreview() {
       <div className="luxury-shell bg-warm/10">
         <div className="luxury-core bg-chocolate p-8 text-warm sm:p-12 lg:p-16">
           <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-caramel">
-            Nossa essencia
+            Nossa essência
           </p>
           <h2 className="mt-6 max-w-2xl font-display text-5xl font-semibold leading-tight sm:text-6xl">
             Feita para transformar pipoca em sobremesa.
@@ -256,12 +268,12 @@ function ManifestoPreview() {
           <div className="mt-10 max-w-2xl space-y-6 text-base leading-8 text-warm/78">
             <p>
               A CrunchPop existe para elevar um momento simples a uma
-              experiencia de confeitaria: textura, creme e crocancia na mesma
+              experiência de confeitaria: textura, creme e crocância na mesma
               mordida.
             </p>
             <p>
               Cada receita nasce em pequenos lotes, com preparo artesanal e uma
-              apresentacao pensada para deixar o produto falar primeiro.
+              apresentação pensada para deixar o produto falar primeiro.
             </p>
           </div>
         </div>
@@ -277,7 +289,7 @@ function ManifestoPreview() {
               {item}
             </p>
             <p className="mt-3 text-sm leading-7 text-warm/68">
-              Um detalhe essencial da experiencia premium CrunchPop.
+              Um detalhe essencial da experiência premium CrunchPop.
             </p>
           </div>
         ))}
@@ -295,24 +307,24 @@ function FlavorsPreview() {
           Escolha sua CrunchPop
         </h2>
         <p className="mt-5 text-sm leading-7 text-coffee">
-          Uma decisao por vez: classicos da casa ou combinacao personalizada.
+          Uma decisão por vez: clássicos da casa ou combinação personalizada.
         </p>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="grid border-y border-chocolate/10 md:grid-cols-2 md:divide-x md:divide-chocolate/10">
         <DecisionPreview
           Icon={Star}
-          eyebrow="Classicos CrunchPop"
-          note="Mais rapido"
-          title="Classicos CrunchPop"
-          text="Nossas combinacoes favoritas, criadas para entregar a experiencia perfeita."
+          eyebrow="Clássicos CrunchPop"
+          note="Mais rápido"
+          title="Clássicos CrunchPop"
+          text="Nossas combinações favoritas, criadas para entregar a experiência perfeita."
           actionLabel="Escolher"
         />
         <DecisionPreview
           Icon={Sparkles}
           eyebrow="Personalizada"
           note="Do seu jeito"
-          title="Crie sua combinacao"
+          title="Crie sua combinação"
           text="Escolha seus sabores favoritos e monte sua CrunchPop do seu jeito."
           actionLabel="Personalizar"
         />
@@ -337,22 +349,22 @@ function DecisionPreview({
   title: string;
 }) {
   return (
-    <article className="luxury-shell group">
-      <div className="luxury-core h-full p-5 sm:p-7">
-        <div className="mb-12 flex items-center justify-between">
-          <p className="luxury-eyebrow">{eyebrow}</p>
-          <span className="grid h-10 w-10 place-items-center rounded-full border border-caramel/25 bg-warm text-caramel">
-            <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
-          </span>
+    <article className="group border-b border-chocolate/10 py-7 last:border-b-0 md:border-b-0 md:px-8 md:first:pl-0 md:last:pr-0">
+      <div className="flex h-full flex-col">
+        <div className="mb-7 flex items-center justify-between">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-caramel">
+            {eyebrow}
+          </p>
+          <Icon className="h-5 w-5 text-caramel" aria-hidden="true" />
         </div>
-        <h3 className="font-display text-4xl font-semibold leading-tight text-chocolate sm:text-5xl">
+        <h3 className="font-display text-3xl font-semibold leading-tight text-chocolate sm:text-4xl">
           {title}
         </h3>
-        <p className="mt-5 max-w-md text-sm leading-7 text-coffee">{text}</p>
-        <p className="mt-7 inline-flex rounded-full border border-caramel/25 bg-warm px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-caramel">
+        <p className="mt-4 max-w-md text-sm leading-6 text-coffee">{text}</p>
+        <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-caramel">
           {note}
         </p>
-        <span className="luxury-cta group mt-9 w-full sm:w-auto">
+        <span className="group mt-7 inline-flex min-h-11 w-full items-center justify-between rounded-full bg-chocolate py-1.5 pl-6 pr-1.5 text-sm font-semibold text-warm transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] sm:w-auto sm:min-w-44">
           <span>{actionLabel}</span>
           <span className="luxury-cta-mark" aria-hidden="true">
             →
@@ -388,7 +400,7 @@ function CardsPreview() {
                 <div className="mb-5 overflow-hidden rounded-xl bg-warm">
                   <Image
                     src="/crunchpop-hero.png"
-                    alt={`CrunchPop classico ${product.name}`}
+                    alt={`CrunchPop clássico ${product.name}`}
                     width={640}
                     height={420}
                     className="aspect-[4/3] w-full object-cover"
@@ -439,7 +451,7 @@ function CheckoutPreview() {
   return (
     <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
       <div>
-        <p className="luxury-eyebrow">Finalizacao</p>
+        <p className="luxury-eyebrow">Finalização</p>
         <h2 className="mt-4 font-display text-5xl font-semibold leading-tight text-chocolate sm:text-6xl">
           Poucos campos. Nenhuma conta.
         </h2>
@@ -470,12 +482,12 @@ function CheckoutPreview() {
             </div>
           </div>
           <p className="mt-5 rounded-2xl border border-caramel/25 bg-warm px-4 py-3 text-xs leading-6 text-coffee">
-            Apos confirmar o pedido, enviaremos o endereco e o horario em que
-            sua CrunchPop estara pronta para retirada.
+            Após confirmar o pedido, enviaremos o endereço e o horário em que
+            sua CrunchPop estará pronta para retirada.
           </p>
           <label className="mt-5 block">
             <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-coffee">
-              Observacoes
+              Observações
             </span>
             <span className="block min-h-24 rounded-2xl border border-chocolate/10 bg-warm px-4 py-3 text-sm text-coffee/70">
               Ex.: sem canela
@@ -494,7 +506,7 @@ function CheckoutProgressPreview() {
   return (
     <div className="rounded-2xl border border-chocolate/10 bg-warm px-4 py-4">
       <div className="grid grid-cols-3 gap-2">
-        {["Pedido", "Dados", "Revisao"].map((step, index) => (
+        {["Escolha", "Contato", "Conferir"].map((step, index) => (
           <div key={step} className="min-w-0">
             <div
               className={`h-1.5 rounded-full ${
@@ -534,7 +546,7 @@ function ModalPreview() {
     <div className="mx-auto max-w-2xl rounded-[2rem] border border-warm/12 bg-cream text-chocolate shadow-drawer">
       <div className="border-b border-chocolate/10 px-5 py-5 sm:px-7">
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-caramel">
-          Revisao
+          Conferência
         </p>
         <h2 className="mt-2 font-display text-4xl font-semibold text-chocolate">
           Confira seu pedido
@@ -551,23 +563,24 @@ function ModalPreview() {
                 <h3 className="font-display text-3xl font-semibold text-chocolate">
                   CrunchPop • {item.sizeName}
                 </h3>
-                {item.kind === "classic" && (
-                  <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-caramel">
-                    {item.name}
-                  </p>
-                )}
               </div>
               <span className="rounded-full border border-caramel/25 px-3 py-1 text-xs font-semibold text-chocolate">
                 {item.quantity}x
               </span>
             </div>
             <div className="mt-4 text-sm leading-6 text-coffee">
-              <p className="font-semibold text-chocolate">Sabores:</p>
-              <ul className="mt-1 space-y-1">
-                {item.flavors.map((flavor) => (
-                  <li key={flavor}>• {flavor}</li>
-                ))}
-              </ul>
+              {item.kind === "classic" ? (
+                <p className="font-semibold text-chocolate">{item.name}</p>
+              ) : (
+                <>
+                  <p className="font-semibold text-chocolate">Sabores:</p>
+                  <ul className="mt-1 space-y-1">
+                    {item.flavors.map((flavor) => (
+                      <li key={flavor}>• {flavor}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
             </div>
           </article>
         ))}
@@ -583,7 +596,7 @@ function ModalPreview() {
             Importante
           </p>
           <p className="mt-3 text-xs leading-6 text-coffee">
-            Apos enviar seu pedido pelo WhatsApp, confirmaremos a
+            Após enviar seu pedido pelo WhatsApp, confirmaremos a
             disponibilidade, informaremos o tempo estimado de preparo e
             enviaremos a chave Pix.
           </p>
@@ -634,10 +647,10 @@ function CartPreview() {
       <div>
         <p className="luxury-eyebrow">Drawer</p>
         <h2 className="mt-4 font-display text-5xl font-semibold leading-tight text-chocolate sm:text-6xl">
-          Carrinho sempre acessivel.
+          Carrinho sempre acessível.
         </h2>
         <p className="mt-5 max-w-xl text-sm leading-7 text-coffee">
-          O drawer concentra resumo, ajustes de quantidade e proximo passo.
+          O drawer concentra resumo, ajustes de quantidade e próximo passo.
         </p>
       </div>
 
@@ -645,10 +658,10 @@ function CartPreview() {
         <div className="flex items-center justify-between border-b border-chocolate/10 px-5 py-5 sm:px-7">
           <div>
             <h3 className="font-display text-3xl font-semibold text-chocolate">
-              Quase la.
+              Quase lá.
             </h3>
             <p className="mt-1 max-w-xs text-xs leading-5 text-coffee">
-              Falta so mais um passo para preparar sua CrunchPop.
+              Falta só mais um passo para preparar sua CrunchPop.
             </p>
           </div>
           <span className="grid h-11 w-11 place-items-center rounded-full border border-chocolate/10 bg-warm text-chocolate">

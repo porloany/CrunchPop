@@ -14,6 +14,7 @@ import {
   X
 } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { BrandLogo } from "@/components/brand-logo";
 import { formatCurrency } from "@/lib/format";
 import {
   classicProducts,
@@ -71,7 +72,7 @@ export function CrunchPopPage() {
   const [checkout, setCheckout] = useState<CheckoutData>(initialCheckout);
   const [status, setStatus] = useState("");
   const [toast, setToast] = useState("");
-  const [purchasePath, setPurchasePath] = useState<PurchasePath | null>(null);
+  const [purchasePath, setPurchasePath] = useState<PurchasePath>("classic");
   const [selectedSizeId, setSelectedSizeId] = useState<string | null>(null);
   const [selectedFlavorIds, setSelectedFlavorIds] = useState<string[]>([]);
   const [addedCartItemId, setAddedCartItemId] = useState<string | null>(null);
@@ -117,7 +118,7 @@ export function CrunchPopPage() {
     setSelectedFlavorIds((current) => current.slice(0, nextSize.maxFlavors));
   }
 
-  function selectPurchasePath(path: PurchasePath | null) {
+  function selectPurchasePath(path: PurchasePath) {
     setPurchasePath(path);
 
     if (path !== "custom") {
@@ -395,8 +396,8 @@ function Header({
   onCartClick: () => void;
 }) {
   return (
-    <header className="sticky top-3 z-30 px-4 pt-3">
-      <div className="mx-auto flex max-w-6xl items-center justify-between rounded-full border border-chocolate/10 bg-warm/85 px-4 py-3 shadow-card backdrop-blur-xl sm:px-5">
+    <header className="sticky top-0 z-30 border-b border-chocolate/10 bg-cream/88 px-5 backdrop-blur-xl sm:px-8">
+      <div className="mx-auto flex max-w-6xl items-center justify-between py-2">
         <a
           href="#top"
           className="text-chocolate"
@@ -424,55 +425,64 @@ function Header({
 
 function BrandLockup({ compact = false }: { compact?: boolean }) {
   return (
-    <div className={compact ? "text-left" : "text-left"}>
-      <p
-        className={`font-display font-semibold leading-none tracking-normal text-chocolate ${
-          compact ? "text-3xl" : "text-5xl sm:text-6xl"
-        }`}
-      >
-        Crunch<span className="text-caramel">Pop</span>
-      </p>
-      {!compact && (
-        <div className="mt-5 flex items-center gap-4">
-          <span className="h-px w-10 bg-caramel/70" aria-hidden="true" />
-          <p className="text-[11px] font-medium uppercase tracking-[0.38em] text-coffee">
-            Pipocas artesanais
-          </p>
-          <span className="h-px w-10 bg-caramel/70" aria-hidden="true" />
-        </div>
-      )}
-    </div>
+    <BrandLogo
+      compact={compact}
+      className={
+        compact
+          ? "h-10 w-[170px] sm:h-11 sm:w-[188px]"
+          : "h-[188px] w-[340px] max-w-full sm:h-[216px] sm:w-[390px]"
+      }
+    />
   );
 }
 
 function Hero() {
   const highlights = [
-    "500 ml ou 1 litro",
-    "Monte em poucos toques",
-    "Finalização pelo WhatsApp"
+    "500 ml - R$ 23",
+    "1 litro - R$ 38",
+    "Pix após confirmação"
   ];
 
   return (
-    <section id="top" className="px-5 pb-20 pt-10 sm:px-8 lg:pb-28 lg:pt-16">
+    <section id="top" className="px-5 pb-16 pt-10 sm:px-8 lg:pb-24 lg:pt-14">
       <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
         <div className="animate-rise">
-          <p className="luxury-eyebrow mb-7">
+          <p className="mb-7 text-[11px] font-semibold uppercase tracking-[0.28em] text-caramel">
             Sobremesa artesanal em Curitiba
           </p>
           <h1 className="max-w-3xl font-display text-[3.65rem] font-semibold leading-[0.94] tracking-normal text-chocolate sm:text-7xl lg:text-8xl">
-            Pipoca, como você nunca experimentou.
+            Monte sua CrunchPop.
           </h1>
-          <p className="mt-7 max-w-xl text-base leading-8 text-coffee sm:text-lg">
-            Pipocas caramelizadas, cobertas com chocolates e cremes
-            selecionados. Preparadas diariamente em pequenos lotes para
-            preservar aquilo que mais importa: a crocância perfeita.
+          <p className="mt-7 max-w-lg text-base leading-8 text-coffee sm:text-lg">
+            Escolha um clássico da casa ou crie sua combinação. Finalize pelo
+            WhatsApp em poucos toques.
           </p>
+          <div className="mt-8 max-w-xl border-y border-chocolate/10">
+            {sizeOptions.map((size) => (
+              <div
+                key={size.id}
+                className="flex items-baseline justify-between gap-4 border-b border-chocolate/10 py-3 last:border-b-0"
+              >
+                <div>
+                  <p className="font-display text-3xl font-semibold text-chocolate">
+                    {size.name}
+                  </p>
+                  <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-coffee">
+                    Até {size.maxFlavors} sabores
+                  </p>
+                </div>
+                <p className="text-sm font-semibold text-caramel">
+                  {formatCurrency(size.price)}
+                </p>
+              </div>
+            ))}
+          </div>
           <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
             <a
               href="#sabores"
               className="luxury-cta group w-full sm:w-auto"
             >
-              <span>Escolher minha CrunchPop</span>
+              <span>Ver cardÃ¡pio</span>
               <span className="luxury-cta-mark" aria-hidden="true">
                 →
               </span>
@@ -539,13 +549,13 @@ function ProductsSection({
   onToggleFlavor
 }: {
   addedCartItemId: string | null;
-  purchasePath: PurchasePath | null;
+  purchasePath: PurchasePath;
   selectedFlavorIds: string[];
   selectedSize: SizeOption | null;
   selectedSizeId: string | null;
   onAddClassic: (product: ClassicProduct, size: SizeOption) => void;
   onAddCustom: () => void;
-  onSelectPath: (path: PurchasePath | null) => void;
+  onSelectPath: (path: PurchasePath) => void;
   onSelectSize: (sizeId: string) => void;
   onToggleFlavor: (flavorId: string) => void;
 }) {
@@ -576,13 +586,56 @@ function ProductsSection({
   }
 
   return (
-    <section id="sabores" className="bg-warm px-5 py-16 sm:px-8 lg:py-24">
+    <section id="sabores" className="bg-warm px-5 py-14 sm:px-8 lg:py-20">
       <div className="mx-auto max-w-6xl">
+        <div className="mb-7 flex flex-col gap-5 border-b border-chocolate/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-caramel">
+              CardÃ¡pio
+            </p>
+            <h2 className="mt-3 font-display text-4xl font-semibold leading-tight text-chocolate sm:text-5xl">
+              Escolha sua CrunchPop
+            </h2>
+          </div>
+          <div
+            className="flex overflow-hidden rounded-full border border-chocolate/10 bg-cream p-1"
+            role="tablist"
+            aria-label="Tipo de pedido"
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={purchasePath === "classic"}
+              onClick={() => onSelectPath("classic")}
+              className={`min-h-10 flex-1 rounded-full px-5 text-sm font-semibold transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] sm:flex-none ${
+                purchasePath === "classic"
+                  ? "bg-chocolate text-warm"
+                  : "text-coffee hover:text-chocolate"
+              }`}
+            >
+              ClÃ¡ssicos
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={purchasePath === "custom"}
+              onClick={() => onSelectPath("custom")}
+              className={`min-h-10 flex-1 rounded-full px-5 text-sm font-semibold transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] sm:flex-none ${
+                purchasePath === "custom"
+                  ? "bg-chocolate text-warm"
+                  : "text-coffee hover:text-chocolate"
+              }`}
+            >
+              Monte a sua
+            </button>
+          </div>
+        </div>
+
         {!purchasePath && (
           <div className="animate-rise">
-            <div className="mx-auto mb-10 max-w-2xl text-center">
+            <div className="mx-auto mb-8 max-w-2xl text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-caramel">
-                Pedido
+                Escolha
               </p>
               <h2 className="mt-4 font-display text-4xl font-semibold leading-tight text-chocolate sm:text-5xl">
                 Escolha sua CrunchPop
@@ -592,7 +645,7 @@ function ProductsSection({
               </p>
             </div>
 
-            <div className="grid gap-5 md:grid-cols-2">
+            <div className="grid border-y border-chocolate/10 md:grid-cols-2 md:divide-x md:divide-chocolate/10">
               <DecisionCard
                 eyebrow="Clássicos CrunchPop"
                 Icon={Star}
@@ -621,10 +674,10 @@ function ProductsSection({
               eyebrow="Clássicos CrunchPop"
               title="Nossos Clássicos"
               subtitle="Combinações criadas para entregar a experiência perfeita."
-              onBack={() => onSelectPath(null)}
+              onBack={() => onSelectPath("custom")}
             />
 
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 lg:grid-cols-2">
               {classicProducts.map((product, index) => {
                 const selectedClassicSize = getClassicSize(product.id);
                 const cartItemId = `${product.id}-${selectedClassicSize.id}`;
@@ -632,22 +685,22 @@ function ProductsSection({
                 return (
                   <article
                     key={product.id}
-                    className="luxury-shell group relative transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:shadow-soft"
+                    className="group relative rounded-2xl border border-chocolate/10 bg-cream p-4 shadow-card transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
                     style={{ animationDelay: `${index * 70}ms` }}
                   >
-                    <div className="luxury-core flex min-h-full flex-col p-3">
+                    <div className="flex min-h-full flex-col">
                     {product.badge && (
                       <span className="absolute right-5 top-5 z-10 rounded-full bg-warm/95 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-caramel shadow-card">
                         {product.badge}
                       </span>
                     )}
-                    <div className="mb-5 overflow-hidden rounded-xl bg-warm">
+                    <div className="mb-4 overflow-hidden rounded-xl bg-warm">
                       <Image
                         src="/crunchpop-hero.png"
                         alt={`CrunchPop clássico ${product.name}`}
                         width={640}
                         height={420}
-                        className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-[1.03]"
+                        className="aspect-[16/10] w-full object-cover transition duration-700 group-hover:scale-[1.03]"
                         style={{ objectPosition: product.imagePosition }}
                       />
                     </div>
@@ -658,14 +711,14 @@ function ProductsSection({
                       {product.description}
                     </p>
 
-                    <div className="mt-5 grid grid-cols-2 gap-2">
+                    <div className="mt-4 flex gap-2">
                       {sizeOptions.map((size) => (
                         <button
                           key={size.id}
                           type="button"
                           onClick={() => selectClassicSize(product.id, size.id)}
                           aria-pressed={selectedClassicSize.id === size.id}
-                          className={`min-h-11 rounded-full border px-3 py-2 text-xs font-semibold transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+                          className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
                             selectedClassicSize.id === size.id
                               ? "border-chocolate bg-chocolate text-warm"
                               : "border-chocolate/10 bg-warm text-chocolate hover:border-caramel"
@@ -676,11 +729,8 @@ function ProductsSection({
                       ))}
                     </div>
 
-                    <div className="mt-5 border-t border-chocolate/10 pt-4">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-coffee">
-                        {selectedClassicSize.name}
-                      </p>
-                      <p className="mt-1 font-display text-3xl font-semibold text-chocolate">
+                    <div className="mt-4 flex items-center justify-between gap-3 border-t border-chocolate/10 pt-4">
+                      <p className="font-display text-2xl font-semibold text-chocolate">
                         {formatCurrency(selectedClassicSize.price)}
                       </p>
                       <button
@@ -688,7 +738,7 @@ function ProductsSection({
                         onClick={() =>
                           onAddClassic(product, selectedClassicSize)
                         }
-                        className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-chocolate px-5 py-2 text-sm font-semibold text-warm transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-coffee active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-caramel focus:ring-offset-2 focus:ring-offset-cream"
+                        className="inline-flex min-h-10 items-center justify-center rounded-full bg-chocolate px-5 py-2 text-sm font-semibold text-warm transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-coffee active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-caramel focus:ring-offset-2 focus:ring-offset-cream"
                       >
                         {addedCartItemId === cartItemId
                           ? "Adicionado"
@@ -709,7 +759,7 @@ function ProductsSection({
               eyebrow="Personalizada"
               title="Crie sua combinação"
               subtitle="Escolha o tamanho e combine seus sabores favoritos."
-              onBack={() => onSelectPath(null)}
+              onBack={() => onSelectPath("classic")}
             />
 
             <div className="luxury-shell mx-auto max-w-3xl">
@@ -860,25 +910,26 @@ function DecisionCard({
   title: string;
 }) {
   return (
-    <article className="luxury-shell group transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1 hover:shadow-soft">
-      <div className="luxury-core h-full p-5 sm:p-7">
-        <div className="mb-12 flex items-center justify-between">
-          <p className="luxury-eyebrow">{eyebrow}</p>
-          <span
-            className="grid h-10 w-10 place-items-center rounded-full border border-caramel/25 bg-warm text-caramel"
-            aria-hidden="true"
-          >
-            <Icon className="h-[18px] w-[18px]" />
-          </span>
+    <article className="group border-b border-chocolate/10 py-7 last:border-b-0 md:border-b-0 md:px-8 md:first:pl-0 md:last:pr-0">
+      <div className="flex h-full flex-col">
+        <div className="mb-7 flex items-center justify-between">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-caramel">
+            {eyebrow}
+          </p>
+          <Icon className="h-5 w-5 text-caramel" aria-hidden="true" />
         </div>
-        <h3 className="font-display text-4xl font-semibold leading-tight text-chocolate sm:text-5xl">
+        <h3 className="font-display text-3xl font-semibold leading-tight text-chocolate sm:text-4xl">
           {title}
         </h3>
-        <p className="mt-5 max-w-md text-sm leading-7 text-coffee">{text}</p>
-        <p className="mt-7 inline-flex rounded-full border border-caramel/25 bg-warm px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-caramel">
+        <p className="mt-4 max-w-md text-sm leading-6 text-coffee">{text}</p>
+        <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-caramel">
           {note}
         </p>
-        <button type="button" onClick={onClick} className="luxury-cta group mt-9 w-full sm:w-auto">
+        <button
+          type="button"
+          onClick={onClick}
+          className="group mt-7 inline-flex min-h-11 w-full items-center justify-between rounded-full bg-chocolate py-1.5 pl-6 pr-1.5 text-sm font-semibold text-warm transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-coffee active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-caramel focus:ring-offset-2 focus:ring-offset-warm sm:w-auto sm:min-w-44"
+        >
           <span>{actionLabel}</span>
           <span className="luxury-cta-mark" aria-hidden="true">
             →
@@ -914,7 +965,7 @@ function SectionHeader({
       <button
         type="button"
         onClick={onBack}
-        className="inline-flex min-h-10 items-center justify-center rounded-full border border-chocolate/10 bg-cream px-5 py-2 text-sm font-semibold text-chocolate transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-caramel hover:text-coffee active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-caramel"
+        className="hidden min-h-10 items-center justify-center rounded-full border border-chocolate/10 bg-cream px-5 py-2 text-sm font-semibold text-chocolate transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:border-caramel hover:text-coffee active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-caramel"
       >
         Voltar
       </button>
@@ -939,27 +990,27 @@ function HowItWorks() {
   ];
 
   return (
-    <section id="pedido" className="px-5 py-12 sm:px-8 lg:py-16">
-      <div className="mx-auto grid max-w-6xl gap-8 border-y border-chocolate/10 py-8 md:grid-cols-[0.7fr_1.3fr] md:items-center">
+    <section id="pedido" className="px-5 py-8 sm:px-8 lg:py-10">
+      <div className="mx-auto grid max-w-6xl gap-5 border-y border-chocolate/10 py-5 md:grid-cols-[0.55fr_1.45fr] md:items-center">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-caramel">
-            Pedido
+            Fluxo
           </p>
-          <h2 className="mt-3 font-display text-4xl font-semibold text-chocolate sm:text-5xl">
+          <h2 className="mt-2 font-display text-3xl font-semibold text-chocolate sm:text-4xl">
             Como pedir
           </h2>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid divide-y divide-chocolate/10 border-y border-chocolate/10 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
           {steps.map((step, index) => {
             const Icon = step.icon;
 
             return (
               <div
                 key={step.title}
-                className="flex items-center gap-4 rounded-2xl border border-chocolate/10 bg-warm px-4 py-4"
+                className="flex items-center gap-3 py-4 sm:px-5"
               >
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-caramel/25 text-caramel">
+                <span className="grid h-9 w-9 shrink-0 place-items-center text-caramel">
                   <Icon className="h-4 w-4" aria-hidden="true" />
                 </span>
                 <div>
@@ -1026,7 +1077,7 @@ function OrderConfirmationModal({
       >
         <div className="border-b border-chocolate/10 px-5 py-5 sm:px-7">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-caramel">
-            Revisão
+            Conferência
           </p>
           <h2
             id="confirmation-title"
@@ -1048,11 +1099,6 @@ function OrderConfirmationModal({
                     <h3 className="font-display text-3xl font-semibold text-chocolate">
                       CrunchPop • {item.sizeName}
                     </h3>
-                    {item.kind === "classic" && (
-                      <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-caramel">
-                        {item.name}
-                      </p>
-                    )}
                   </div>
                   {item.quantity > 1 && (
                     <span className="rounded-full border border-caramel/25 px-3 py-1 text-xs font-semibold text-chocolate">
@@ -1061,12 +1107,18 @@ function OrderConfirmationModal({
                   )}
                 </div>
                 <div className="mt-4 text-sm leading-6 text-coffee">
-                  <p className="font-semibold text-chocolate">Sabores:</p>
-                  <ul className="mt-1 space-y-1">
-                    {item.flavors.map((flavor) => (
-                      <li key={flavor}>• {flavor}</li>
-                    ))}
-                  </ul>
+                  {item.kind === "classic" ? (
+                    <p className="font-semibold text-chocolate">{item.name}</p>
+                  ) : (
+                    <>
+                      <p className="font-semibold text-chocolate">Sabores:</p>
+                      <ul className="mt-1 space-y-1">
+                        {item.flavors.map((flavor) => (
+                          <li key={flavor}>• {flavor}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
                 </div>
               </article>
             ))}
@@ -1158,11 +1210,13 @@ function ReviewBlock({ label, value }: { label: string; value: string }) {
 }
 
 function CheckoutProgress({ activeStep }: { activeStep: number }) {
-  const steps = ["Pedido", "Dados", "Revisão"];
+  const steps = ["Escolha", "Contato", "Conferir"];
 
   return (
     <div className="mt-5 rounded-2xl border border-chocolate/10 bg-warm px-4 py-4">
-      <p className="sr-only">Etapas da finalização: pedido, dados e revisão.</p>
+      <p className="sr-only">
+        Etapas da finalização: escolha, contato e conferência.
+      </p>
       <div className="grid grid-cols-3 gap-2">
         {steps.map((step, index) => (
           <div key={step} className="min-w-0">
