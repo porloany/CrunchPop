@@ -651,7 +651,7 @@ function ProductsSection({
                       <p className="mb-1.5 text-[9px] font-medium uppercase tracking-[0.18em] text-caramel sm:text-[10px]">
                         {product.note}
                       </p>
-                      <h3 className="font-display text-lg font-semibold italic leading-tight text-chocolate sm:text-xl lg:text-2xl">
+                      <h3 className="font-display text-lg font-semibold leading-tight text-chocolate sm:text-xl lg:text-2xl">
                         {product.name}
                       </h3>
                       <p className="mt-1 line-clamp-2 text-[11px] leading-4 text-coffee sm:text-xs sm:leading-5">
